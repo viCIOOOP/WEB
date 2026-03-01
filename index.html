@@ -3,16 +3,648 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Заголовок страницы</title>
+    <title>Mix_3D - Студия 3D печати</title>
+    <style>
+        /* CSS стили */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Навигация (слайды) */
+        .nav-bar {
+            display: flex;
+            background: #2c3e50;
+            padding: 15px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: #fff;
+        }
+
+        .nav-btn.active {
+            background: #fff;
+            color: #2c3e50;
+            font-weight: bold;
+        }
+
+        /* Слайды */
+        .slides-container {
+            position: relative;
+            min-height: 500px;
+        }
+
+        .slide {
+            display: none;
+            padding: 40px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Карточки услуг */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .service-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+            border-color: #667eea;
+        }
+
+        .service-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .service-title {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .service-desc {
+            color: #666;
+            line-height: 1.5;
+        }
+
+        /* Сетка товаров */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover; /* Чтобы фото красиво вписывалось */
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 15px;
+        }
+
+        .product-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .product-price {
+            color: #667eea;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        /* Поиск и фильтры */
+        .search-box {
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            margin: 20px 0;
+            transition: border-color 0.3s;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .filter-btns {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .filter-btn:hover {
+            background: #5a67d8;
+            transform: scale(1.05);
+        }
+
+        .filter-btn.active-filter {
+            background: #2c3e50;
+            border-color: #667eea;
+        }
+
+        /* Детальная страница */
+        .back-btn {
+            background: #2c3e50;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-bottom: 30px;
+            transition: background 0.3s;
+            display: inline-block;
+        }
+
+        .back-btn:hover {
+            background: #1a252f;
+        }
+
+        .detail-content {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            line-height: 1.6;
+        }
+
+        .detail-title {
+            font-size: 32px;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        .price-list {
+            list-style: none;
+            margin: 20px 0;
+        }
+
+        .price-list li {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .price-list li:last-child {
+            border-bottom: none;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+
+        .order-info {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e8f4fd;
+            border-radius: 10px;
+        }
+
+        .telegram-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 15px 30px;
+            background: #0088cc;
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: bold;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .telegram-link:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(0,136,204,0.4);
+        }
+
+        .studio-name {
+            font-size: 42px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .studio-name span {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .no-products {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 18px;
+            grid-column: 1 / -1;
+        }
+    </style>
 </head>
 <body>
-  <h1>Топ 5 мест в России</h1>
-<ol>
-  <li><a href="page1.html">Сулакский каньон (Дагестан)</a></li>
-  <li><a href="page2.html">Телецкое озеро (Алтай)</a></li>
-  <li><a href="page3.html">Нижний Новгород</a></li>
-  <li><a href="page4.html">Гейзерное озеро (Алтай)</a></li>
-  <li><a href="page5.html">Бархан Сарыкум (Дагестан)</a></li>
-</ol>
+    <div class="container">
+        <!-- Навигация по слайдам -->
+        <div class="nav-bar">
+            <button class="nav-btn active" data-slide="main">Главная</button>
+            <button class="nav-btn" data-slide="service-3d">3D печать на заказ</button>
+            <button class="nav-btn" data-slide="catalog">Готовые изделия</button>
+        </div>
+
+        <!-- Контейнер для слайдов -->
+        <div class="slides-container">
+            <!-- Слайд 1: Главная страница -->
+            <div class="slide active" id="main">
+                <div class="studio-name">
+                    <span>Mix_3D</span>
+                </div>
+                <p style="text-align: center; font-size: 18px; color: #666;">Студия 3D печати</p>
+                
+                <div class="services-grid">
+                    <div class="service-card" data-target="service-3d">
+                        <div class="service-icon">🖨️</div>
+                        <div class="service-title">3D печать на заказ</div>
+                        <div class="service-desc">Индивидуальные проекты любой сложности. Печать по вашим моделям.</div>
+                    </div>
+                    
+                    <div class="service-card" data-target="catalog">
+                        <div class="service-icon">📦</div>
+                        <div class="service-title">Готовые изделия</div>
+                        <div class="service-desc">Брелки, фигурки и другие модели в наличии. Смотрите каталог с ценами.</div>
+                    </div>
+                </div>
+
+                <!-- Ссылка на Telegram для заказов -->
+                <div style="text-align: center;">
+                    <a href="https://t.me/mix_3d" target="_blank" class="telegram-link">
+                        📱 Сделать заказ в Telegram
+                    </a>
+                    <p style="margin-top: 10px; color: #666; font-size: 14px;">Напишите нам — мы онлайн</p>
+                </div>
+            </div>
+
+            <!-- Слайд 2: 3D печать на заказ (детально) -->
+            <div class="slide" id="service-3d">
+                <button class="back-btn" onclick="switchSlide('main')">← На главную</button>
+                <div class="detail-content">
+                    <h2 class="detail-title">3D печать на заказ</h2>
+                    <p>Мы предлагаем полный цикл услуг по 3D печати. Работаем с различными материалами: PLA, ABS, PETG, смолы.</p>
+                    
+                    <h3 style="margin: 20px 0 10px;">Что мы делаем:</h3>
+                    <ul style="margin-left: 20px; line-height: 2;">
+                        <li>Печать по вашим 3D моделям (STL, OBJ, 3MF)</li>
+                        <li>Печать по фото или эскизу</li>
+                    </ul>
+
+                    <div class="price-list">
+                        <h3>Примерные цены:</h3>
+                        <li><span>Простая модель (до 50г)</span> <span>от 500 ₽</span></li>
+                        <li><span>Средняя модель (50-200г)</span> <span>от 1500 ₽</span></li>
+                        <li><span>Сложная модель (200г+)</span> <span>от 3000 ₽</span></li>
+                    </div>
+
+                    <div class="order-info">
+                        <strong>📌 Для заказа:</strong> пришлите модель, фото или описание в Telegram. Сделаем расчет в течение часа.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Слайд 3: Каталог готовых изделий с РЕАЛЬНЫМИ ФОТО -->
+            <div class="slide" id="catalog">
+                <button class="back-btn" onclick="switchSlide('main')">← На главную</button>
+                <h2>Готовые изделия</h2>
+                
+                <!-- Поиск -->
+                <input type="text" class="search-box" id="searchInput" placeholder="Поиск по названию...">
+
+                <!-- Категории -->
+                <div class="filter-btns">
+                    <button class="filter-btn active-filter" onclick="filterProducts('all')">Все</button>
+                    <button class="filter-btn" onclick="filterProducts('brelok')">Брелки</button>
+                    <button class="filter-btn" onclick="filterProducts('figurka')">Фигурки</button>
+                </div>
+
+                <!-- Сетка товаров с ФОТОГРАФИЯМИ -->
+                <div class="products-grid" id="productsGrid">
+                    <!-- Брелки с фотками -->
+                    <div class="product-card" data-category="brelok" data-name="Брелок Котик">
+                        <div class="product-image">
+                            <img src="images/cat-brelok.jpg" alt="Брелок Котик" onerror="this.style.display='none'; this.parentNode.innerHTML='🐱';">
+                        </div>
+                        <div class="product-info">
+                            <div class="product-name">Брелок "Котик"</div>
+                            <div class="product-price">350 ₽</div>
+                        </div>
+                    </div>
+                    
+                    <div class="product-card" data-category="brelok" data-name="Брелок Марио">
+                        <div class="product-image">
+                            <img src="images/mario-brelok.jpg" alt="Брелок Марио" onerror="this.style.display='none'; this.parentNode.innerHTML='🍄';">
+                        </div>
+                        <div class="product-info">
+                            <div class="product-name">Брелок "Марио"</div>
+                            <div class="product-price">400 ₽</div>
+                        </div>
+                    </div>
+                    
+                    <div class="product-card" data-category="brelok" data-name="Брелок Машинка">
+                        <div class="product-image">
+                            <img src="images/car-brelok.jpg" alt="Брелок Машинка" onerror="this.style.display='none'; this.parentNode.innerHTML='🚗';">
+                        </div>
+                        <div class="product-info">
+                            <div class="product-name">Брелок "Машинка"</div>
+                            <div class="product-price">300 ₽</div>
+                        </div>
+                    </div>
+                    
+                    <div class="product-card" data-category="brelok" data-name="Брелок Сердечко">
+                        <div class="product-image">
+                            <img src="images/heart-brelok.jpg" alt="Брелок Сердечко" onerror="this.style.display='none'; this.parentNode.innerHTML='❤️';">
+                        </div>
+                        <div class="product-info">
+                            <div class="product-name">Брелок "Сердечко"</div>
+                            <div class="product-price">250 ₽</div>
+                        </div>
+                    </div>
+                    
+                    <div class="product-card" data-category="brelok" data-name="Брелок Покемон">
+                        <div class="product-image">
+                            <img src="images/pikachu-brelok.jpg" alt="Брелок Пикачу" onerror="this.style.display='none'; this.parentNode.innerHTML='⚡';">
+                        </div>
+                        <div class="product-info">
+                            <div class="product-name">Брелок "Пикачу"</div>
+                            <div class="product-price">450 ₽</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Фигурки с фотками -->
+                    <div class="product-card" data-category="figurka" data-name="Фигурка Дракон">
+                        <div class="product-image">
+                            <img src="images/dragon-figurka.jpg" alt="Фигурка Дракон" onerror="this.style.display='none'; this.parentNode.innerHTML='🐉';">
+                        </div>
+                        <div class="product-info">
+                            <div class="product-name">Фигурка "Дракон"</div>
+                            <div class="product-price">1200 ₽</div>
+                        </div>
+                    </div>
+                    
+                    <div class="product-card" data-category="figurka" data-name="Фигурка Бэтмен">
+                        <div class="product-image">
+                            <img src="images/batman-figurka.jpg" alt="Фигурка Бэтмен" onerror="this.style.display='none'; this.parentNode.innerHTML='🦇';">
+                        </div>
+                        <div class="product-info">
+                            <div class="product-name">Фигурка "Бэтмен"</div>
+                            <div class="product-price">1500 ₽</div>
+                        </div>
+                    </div>
+                    
+                    <div class="product-card" data-category="figurka" data-name="Фигурка Единорог">
+                        <div class="product-image">
+                            <img src="images/unicorn-figurka.jpg" alt="Фигурка Единорог" onerror="this.style.display='none'; this.parentNode.innerHTML='🦄';">
+                        </div>
+                        <div class="product-info">
+                            <div class="product-name">Фигурка "Единорог"</div>
+                            <div class="product-price">1100 ₽</div>
+                        </div>
+                    </div>
+                    
+                    <div class="product-card" data-category="figurka" data-name="Фигурка Майнкрафт Стив">
+                        <div class="product-image">
+                            <img src="images/steve-figurka.jpg" alt="Фигурка Стив" onerror="this.style.display='none'; this.parentNode.innerHTML='⛏️';">
+                        </div>
+                        <div class="product-info">
+                            <div class="product-name">Фигурка "Стив" (Minecraft)</div>
+                            <div class="product-price">900 ₽</div>
+                        </div>
+                    </div>
+                    
+                    <div class="product-card" data-category="figurka" data-name="Фигурка Череп">
+                        <div class="product-image">
+                            <img src="images/skull-figurka.jpg" alt="Фигурка Череп" onerror="this.style.display='none'; this.parentNode.innerHTML='💀';">
+                        </div>
+                        <div class="product-info">
+                            <div class="product-name">Фигурка "Череп"</div>
+                            <div class="product-price">800 ₽</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="order-info" style="margin-top: 30px;">
+                    <strong>📦 Для заказа:</strong> напишите название товара в Telegram. Отправка в течение 2 дней.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ==========
+        let currentFilter = 'all'; // Текущий фильтр в каталоге
+        let searchTerm = ''; // Текущий поисковый запрос
+
+        // ========== НАВИГАЦИЯ ПО СЛАЙДАМ ==========
+        function switchSlide(slideId) {
+            // Скрываем все слайды
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => {
+                slide.classList.remove('active');
+            });
+
+            // Показываем выбранный слайд
+            const activeSlide = document.getElementById(slideId);
+            if (activeSlide) {
+                activeSlide.classList.add('active');
+            }
+
+            // Обновляем активную кнопку навигации
+            const navBtns = document.querySelectorAll('.nav-btn');
+            navBtns.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.slide === slideId) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Прокрутка вверх
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ========== РАБОТА С КАТАЛОГОМ ==========
+        function filterProducts(category) {
+            currentFilter = category;
+            
+            // Обновляем активную кнопку фильтра
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            filterBtns.forEach(btn => {
+                btn.classList.remove('active-filter');
+                if (btn.textContent.toLowerCase().includes(category === 'all' ? 'все' : 
+                    (category === 'brelok' ? 'брелки' : 'фигурки'))) {
+                    btn.classList.add('active-filter');
+                }
+            });
+            
+            // Применяем фильтрацию
+            applyFilters();
+        }
+
+        function searchProducts() {
+            const searchInput = document.getElementById('searchInput');
+            searchTerm = searchInput.value.toLowerCase().trim();
+            applyFilters();
+        }
+
+        function applyFilters() {
+            const products = document.querySelectorAll('.product-card');
+            let visibleCount = 0;
+            
+            products.forEach(product => {
+                const category = product.dataset.category;
+                const name = product.dataset.name.toLowerCase();
+                
+                // Проверяем соответствие фильтру и поиску
+                const matchesFilter = currentFilter === 'all' || category === currentFilter;
+                const matchesSearch = searchTerm === '' || name.includes(searchTerm);
+                
+                if (matchesFilter && matchesSearch) {
+                    product.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    product.style.display = 'none';
+                }
+            });
+            
+            // Показываем сообщение, если ничего не найдено
+            const productsGrid = document.getElementById('productsGrid');
+            let noProductsMsg = document.querySelector('.no-products');
+            
+            if (visibleCount === 0) {
+                if (!noProductsMsg) {
+                    noProductsMsg = document.createElement('div');
+                    noProductsMsg.className = 'no-products';
+                    noProductsMsg.textContent = '😕 Ничего не найдено';
+                    productsGrid.appendChild(noProductsMsg);
+                }
+            } else if (noProductsMsg) {
+                noProductsMsg.remove();
+            }
+        }
+
+        // ========== ИНИЦИАЛИЗАЦИЯ ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            // Навигация
+            const navBtns = document.querySelectorAll('.nav-btn');
+            navBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const slideId = this.dataset.slide;
+                    switchSlide(slideId);
+                });
+            });
+
+            // Карточки услуг
+            const serviceCards = document.querySelectorAll('.service-card');
+            serviceCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const targetSlide = this.dataset.target;
+                    if (targetSlide) {
+                        switchSlide(targetSlide);
+                    }
+                });
+            });
+
+            // Поиск
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', searchProducts);
+            }
+        });
+
+        // Делаем функции глобальными
+        window.switchSlide = switchSlide;
+        window.filterProducts = filterProducts;
+        window.searchProducts = searchProducts;
+    </script>
 </body>
 </html>
